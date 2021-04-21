@@ -27,6 +27,8 @@ import javafx.stage.Stage;
 
 public class SampleController {
 
+	private String appPath;
+	
 	private BufferedImage f;
 	
 	@FXML
@@ -70,9 +72,20 @@ public class SampleController {
     	
     	btnSeparate.setOnMouseClicked(e->{
     		int index=1;
+    		appPath=this.getClass().getClassLoader().getResource("").getPath();
+    		appPath=appPath.split("/bin")[0];
+        	appPath=appPath+"/src/colors/";
+    		File file = new File(appPath+imgName);
+    		System.out.println("OnClicked: "+appPath+imgName);
+			boolean bool = file.mkdirs();
+		      if(bool){
+		         System.out.println("Directory created successfully");
+		      }else{
+		         System.out.println("Sorry couldn’t create specified directory");
+		      }
     		for (Color c: colors) {
     			try {
-					separateColor(c, index);
+    				separateColor(c, index);
 					index++;
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -110,13 +123,15 @@ public class SampleController {
 				}
 			}
 		}
-		String imgPath="src/colors/"+imgName+index+".png";
+		String imgPath=appPath+imgName+"/"+imgName+index+".png";
+		System.out.println("Before saving: "+imgPath);
 		savePNG(focus, imgPath);
 	}
     
 	private static void savePNG(final BufferedImage bi, final String path){
 		try {
 	            RenderedImage rendImage = bi;
+	            System.out.println("OnSaving: "+path);
 	            ImageIO.write(rendImage, "PNG", new File(path));
 	        } catch ( IOException e) {
 	            e.printStackTrace();
@@ -143,18 +158,6 @@ public class SampleController {
 				imgName=name.substring(0, name.length()-4);
 				Image img=new Image(url.toExternalForm());
 				f=ImageIO.read(url);
-//
-//				System.out.println("Pic Width: "+img.getWidth());
-//				System.out.println("Pic Height: "+img.getHeight());
-//				
-//				System.out.println("Pane Width: "+imagePane.getWidth());
-//				System.out.println("Pane Height: "+imagePane.getHeight());
-				
-//				selectedImage.fitWidthProperty().bind(imagePane.widthProperty());
-//				selectedImage.fitHeightProperty().bind(imagePane.heightProperty());
-//				
-//				imagePane.setPrefHeight(img.getHeight());
-//				imagePane.setPrefWidth(img.getWidth());
 				
 				imagePane.setPrefWidth(img.getWidth());
 				imagePane.setPrefHeight(img.getHeight());
@@ -163,13 +166,7 @@ public class SampleController {
 				getSelectedImage().setFitHeight(img.getHeight());
 				
 				getSelectedImage().setImage(img);
-//				
-//				System.out.println("Selected image Width: "+getSelectedImage().getFitWidth());
-//				System.out.println("Selected image Height: "+getSelectedImage().getFitHeight());
-//				
-//				System.out.println("Selected image - image Width: "+getSelectedImage().getImage().getWidth());
-//				System.out.println("Selected image - image Height: "+getSelectedImage().getImage().getHeight());
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
