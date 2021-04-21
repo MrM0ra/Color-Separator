@@ -20,6 +20,7 @@ public class Student extends Thread implements Runnable{
 		}
 	}
 	
+	
 	@Override
 	public void run() {
 		
